@@ -1,4 +1,4 @@
-import { defaultDict, currentPresetName, currentPreset, initialize, toUnicode, replaceChars } from './common.js';
+import { initialize, data, replaceChars } from './common.js';
 
 
 

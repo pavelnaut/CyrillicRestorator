@@ -1,4 +1,4 @@
-import { initialize, defaultDict, currentPresetName, currentPreset, getPreset, getPresetName } from './common.js';
+import { initialize, currentPresetName, currentPreset, data } from './common.js';
 
 
 const mapping = {
@@ -83,7 +83,6 @@ const saveOptions = () => {
     );
   };
   
-// initialize();
   
 // document.addEventListener('DOMContentLoaded', initialize);
 document.getElementById('save').addEventListener('click', saveOptions);
@@ -91,12 +90,6 @@ document.getElementById('save').addEventListener('click', saveOptions);
 
 // Get all elements with class name "inputChar"
 var elements = document.getElementsByClassName("inputChar");
-
-// Loop through the elements and do something with each one
-// for (var i = 0; i < elements.length; i++) {
-//     let element = elements[i];
-//     element.addEventListener('input', restoreOptions);
-// }
 
 function setCurrentCharDict(newDict) {
   // Sets the current character dictionary in browser storage
@@ -129,20 +122,38 @@ function getInputCharacterMapping() {
 document.addEventListener('DOMContentLoaded', function() {
   // Initialize the current character preset
   initialize();
+  loadPresets();
   loadInputCharacterMapping();
 });
 
 
+function loadPresets() {
+  // Get the selection element
+  let presetSelection = document.getElementById("Preset");
+  console.log(Object.keys(data['presets']));
+  // For each preset, create an option element and append it to the select element
+  for (let preset of Object.keys(data['presets'])) {
+    console.log(preset);
+    let option = document.createElement("option");
+    option.value = preset;
+    option.text = preset;
+    presetSelection.appendChild(option);
+  }
+  // Add an option for creating a new preset
+  let preset = 'Create new preset';
+  let option = document.createElement("option");
+  option.value = preset;
+  option.text = preset;
+  presetSelection.appendChild(option);
+}
+
+
 function loadInputCharacterMapping() {
-  // Load current preset name
-  let inputPreset = document.getElementById('Preset');
-  inputPreset.value = currentPresetName;
-  console.log('currentPresetName: ' + currentPresetName);
   // Load input field values with the current character mapping
   for (const key in mapping) {
     let itemId = 'inputChar' + key;
     let inputChar = document.getElementById(itemId);
-    inputChar.value = currentPreset[key];
+    inputChar.value = currentPreset[mapping[key]] ?? '';
   }
 }
 

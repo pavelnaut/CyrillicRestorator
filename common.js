@@ -13,47 +13,29 @@ var defaultDict = {
     '\u0433':'\u01A8', // г:ƨ
     '\u0449':'\u0270', // щ:ɰ
     '\u0448': '\u026F'}; // ш:ɯ wɯѡԝաᴡꮃｗ𑜊𑜎𑜏𝐰𝑤𝒘𝓌𝔀𝔴𝕨𝖜𝗐𝘄𝘸𝙬𝚠
-var currentPresetName = 'Default';
+var currentPresetName;
+var currentPreset;
 var Presets = {'Default': defaultDict};
-var currentPreset = defaultDict;
+var data = {
+    'currentPreset': 'Default',
+    'presets': Presets
+};
 
-async function syncPresetName() {
-    currentPresetName = await new Promise((resolve) => {
-        chrome.storage.sync.get({'currentPresetName': 'Default'}, function (obj) {
-        resolve(obj.currentPresetName);
+// Get data from storage and store in variable 'data'
+async function syncStorage() {
+    data = await new Promise((resolve) => {
+        chrome.storage.sync.get(null, function (obj) {
+            resolve(obj);
+          });
     });
-});
-}
-
-function getPresetName() {
-    syncPresetName();
-    return currentPresetName;
-}
+};
 
 
-async function syncPreset(presetName) {
-    let query = {};
-    query[Presets[presetName]] = defaultDict;
-    currentPreset = await new Promise((resolve) => {
-        chrome.storage.sync.get(query, function (obj) {
-        resolve(obj.Presets[presetName]);
-      });
-    });
-}
-
-function getPreset(presetName='Default') {
-    syncPreset(presetName);
-    return currentPreset;
-}
-
-
- // Initialize the current character preset
+ // Sync with syorage and initialize variables
 function initialize() {
-    syncPresetName().then(() => {
-        syncPreset(currentPresetName).then(() => {
-            console.log('initialize currentPreset: ' + currentPreset);
-        });
-    });
+    syncStorage();
+    currentPresetName = data['currentPreset'] ?? 'Default';
+    currentPreset = data['presets'][currentPresetName] ?? defaultDict;
     console.log('Current preset name: ' + currentPresetName);
     console.log('Current preset: ', currentPreset);
   }
@@ -67,13 +49,13 @@ function toUnicode(str) {
 		}
 		return value;
 	}).join('');
-}
+};
 
 // Replace all characters in the input string with their corresponding values in the current character dictionary
 function replaceChars(input) {
-    console.log('replaceChars currentPreset: ' + currentPreset);
+    console.log('replaceChars currentPreset: ', currentPreset);
     let re = new RegExp('['+ Object.keys(currentPreset).join('')+ ']', 'g');
     return input.replace(re, m => currentPreset[m]);
-    }
+    };
 
-export { defaultDict, currentPresetName, currentPreset, initialize, toUnicode, replaceChars, getPresetName, getPreset };
+export { defaultDict, currentPresetName, currentPreset, data, initialize, toUnicode, replaceChars, syncStorage };
