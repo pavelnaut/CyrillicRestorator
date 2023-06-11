@@ -1,0 +1,11 @@
+{
+  "manifest_version": 3,
+  "name": "Text Manipulator",
+  "version": "1.0",
+  "description": "A Chrome extension that manipulates text input.",
+  "options_page": "options.html",
+  "action": {
+    "default_popup": "index.html"
+  },
+  "permissions": ["clipboardWrite", "storage"]
+}
