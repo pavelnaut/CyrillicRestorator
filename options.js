@@ -1,6 +1,6 @@
-import { initialize, currentPresetName, currentPreset, data } from './common.js';
+import { initialize, data, setData, createNewPresetString, defaultPresetString } from './common.js';
 
-
+var tempData = data;
 const mapping = {
   0: 'а',
   1: 'б',
@@ -65,7 +65,6 @@ const mapping = {
 };
 
 
-
 // Saves options to chrome.storage
 const saveOptions = () => {
     const color = document.getElementById('color').value;
@@ -124,7 +123,46 @@ document.addEventListener('DOMContentLoaded', function() {
   initialize();
   loadPresets();
   loadInputCharacterMapping();
+  // Add event listener to the preset selection element
+  let presetSelection = document.getElementById("Preset")
+  presetSelection.addEventListener('change', function() {
+    let selectedOption = presetSelection.options[presetSelection.selectedIndex];
+    // On selecting "Create new preset"
+    if (selectedOption.value === createNewPresetString) {
+      let newPreset = document.getElementById("newPresetInput") ?? document.createElement("input");
+      newPreset.type = "text";
+      newPreset.id = "newPresetInput";
+      presetSelection.insertAdjacentElement("afterend", newPreset);
+    } else {
+      // Remove input text box if exists
+      document.getElementById("newPresetInput")?.remove();
+    }
+    tempData['currentPreset'] = presetSelection.value;
+    setData(tempData);
+    updateDeleteButton();
+    loadInputCharacterMapping();
+  });
+  updateDeleteButton();
 });
+
+function updateDeleteButton () {
+  let presetSelection = document.getElementById("Preset")
+  let selectedOption = presetSelection.options[presetSelection.selectedIndex];
+  let deleteButton = document.getElementById("deleteButton");
+  if ((selectedOption.value === createNewPresetString) || (selectedOption.value === defaultPresetString)) {
+    // Remove the delete button if it exists
+    deleteButton?.remove();
+  }  else {
+    if (!deleteButton) {
+      // Add the Delete button
+      let selectionContainer = document.getElementById("selectionContainer");
+      let deleteButton = document.createElement("button");
+      deleteButton.id = "deleteButton";
+      deleteButton.textContent = "Delete preset";
+      selectionContainer.appendChild(deleteButton);
+    };
+  };
+};
 
 
 function loadPresets() {
@@ -139,12 +177,6 @@ function loadPresets() {
     option.text = preset;
     presetSelection.appendChild(option);
   }
-  // Add an option for creating a new preset
-  let preset = 'Create new preset';
-  let option = document.createElement("option");
-  option.value = preset;
-  option.text = preset;
-  presetSelection.appendChild(option);
 }
 
 
@@ -153,11 +185,10 @@ function loadInputCharacterMapping() {
   for (const key in mapping) {
     let itemId = 'inputChar' + key;
     let inputChar = document.getElementById(itemId);
-    inputChar.value = currentPreset[mapping[key]] ?? '';
+    let currentPresetName = data["currentPreset"];
+    inputChar.value = data['presets'][currentPresetName][mapping[key]] ?? '';
   }
 }
-
-
 
 // Ах чудна българска земьо, полюшвай цъфтящи жита
 // Жълтата дюля беше щастлива, че пухът, който цъфна, замръзна като гьон.

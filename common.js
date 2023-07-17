@@ -13,13 +13,30 @@ var defaultDict = {
     '\u0433':'\u01A8', // г:ƨ
     '\u0449':'\u0270', // щ:ɰ
     '\u0448': '\u026F'}; // ш:ɯ wɯѡԝաᴡꮃｗ𑜊𑜎𑜏𝐰𝑤𝒘𝓌𝔀𝔴𝕨𝖜𝗐𝘄𝘸𝙬𝚠
+
+var myDict = { 
+    // '\u0432': '\u03D0', // в:ϐ
+    '\u043F':'n', // п:n
+    '\u0438':'u', // и:ս or \u057D
+    '\u043A':'k', // к:k
+    '\u0442':'m', // т:ｍ or \uFF4D
+}; // ш:ɯ wɯѡԝաᴡꮃｗ𑜊𑜎𑜏𝐰𝑤𝒘𝓌𝔀𝔴𝕨𝖜𝗐𝘄𝘸𝙬𝚠
+
+const createNewPresetString = "Create new preset"
+const defaultPresetString = "Default"
+
 var currentPresetName;
 var currentPreset;
-var Presets = {'Default': defaultDict};
+var Presets = {"My new preset": myDict};
+Presets[defaultPresetString] = defaultDict;
+Presets[createNewPresetString] = {};
 var data = {
-    'currentPreset': 'Default',
-    'presets': Presets
+    'currentPreset': defaultPresetString,
+    'presets': Presets,
 };
+function setData(value) {
+  data = value;
+}
 
 // Get data from storage and store in variable 'data'
 async function syncStorage() {
@@ -58,4 +75,4 @@ function replaceChars(input) {
     return input.replace(re, m => currentPreset[m]);
     };
 
-export { defaultDict, currentPresetName, currentPreset, data, initialize, toUnicode, replaceChars, syncStorage };
+export { defaultDict, currentPresetName, currentPreset, data, setData, createNewPresetString, defaultPresetString, initialize, toUnicode, replaceChars, syncStorage };

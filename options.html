@@ -6,11 +6,12 @@
     <link rel="stylesheet" type="text/css" href="style.css">
   </head>
   <body>
-    <select id="Preset">
-    </select>
-    <button id="delete">Delete preset</button>
-    <form>
-        <ul>
+    <div id="selectionContainer">
+      <select id="Preset">
+      </select>
+    </div>
+    <form id="charactersListForm">
+        <ul id="lowercaseCharactersList" class="charactersList">
           <li>
             <label>
               а:
@@ -192,8 +193,8 @@
             </label>
           </li>
         </ul>
-
-        <li>
+        <ul id="uppercaseCharactersList" class="charactersList">
+          <li>
             <label>
               А:
               <input type="text" id="inputChar30" class="inputChar" maxlength="1">
@@ -373,7 +374,8 @@
               <input type="text" id="inputChar59" class="inputChar" maxlength="1">
             </label>
           </li>
-
+        </ul>
+      </form>
     <div id="status"></div>
     <button id="save">Save</button>
 
